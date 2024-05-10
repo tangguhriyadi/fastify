@@ -1,12 +1,37 @@
-import Fastify from "fastify";
+import "dotenv/config";
+import Fastify, { FastifyReply, FastifyRequest } from "fastify";
+import UserRoutes from "./modules/user/user.route";
+import { userSchemas } from "./modules/user/user.schema";
+import jwt from "@fastify/jwt";
 
-const server = Fastify();
+export const server = Fastify();
+
+server.register(jwt, {
+    secret: process.env.JWT_SECRET as string,
+});
+
+server.decorate(
+    "authenticate",
+    async function (request: FastifyRequest, reply: FastifyReply) {
+        try {
+            await request.jwtVerify();
+        } catch (err) {
+            return reply.send(err);
+        }
+    }
+);
 
 server.get("/healthcheck", async function (req, res) {
     return { status: "OK" };
 });
 
 async function main() {
+    for (const schema of userSchemas) {
+        server.addSchema(schema);
+    }
+
+    server.register(UserRoutes, { prefix: "api/users" });
+
     try {
         await server.listen(3000, "0.0.0.0");
         console.info("server running at port 3000");
