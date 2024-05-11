@@ -1,9 +1,13 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { TransactionSendInput } from "./transaction.schema";
+import {
+    TransactionSendInput,
+    TransactionWithdrawInput,
+} from "./transaction.schema";
 import {
     findPaymentAccount,
     processTransaction,
     recordTransaction,
+    recordTransactionWithdraw,
     updateTransactionFailed,
 } from "./transaction.service";
 import { findUserById } from "../user/user.service";
@@ -51,11 +55,14 @@ export async function transactionSendHandler(
         const transaction = await recordTransaction(request.body, user_id);
 
         // start transaction
-        await processTransaction({
-            ...transaction,
-            account_id: account.account_id,
-            recipient_account_id: recipientAccount.account_id,
-        })
+        await processTransaction(
+            {
+                ...transaction,
+                account_id: account.account_id,
+                recipient_account_id: recipientAccount.account_id,
+            },
+            "SEND"
+        )
             .then((transaction) => {
                 transaction.status = "SUCCESS";
                 console.log(
@@ -73,9 +80,70 @@ export async function transactionSendHandler(
                 updateTransactionFailed(transaction.id);
                 return reply.code(500).send({
                     message: "Transaction Failed",
+                    transaction_id: transaction.id,
                 });
             });
     } catch (err) {
+        return reply.code(500).send(err);
+    }
+}
+
+export async function transactionWithdrawHandler(
+    request: FastifyRequest<{
+        Body: TransactionWithdrawInput;
+    }>,
+    reply: FastifyReply
+) {
+    const { amount } = request.body;
+    const { id: user_id } = request.user;
+    try {
+        const account = await findPaymentAccount(user_id, "DEBIT");
+        if (!account) {
+            return reply.code(404).send({
+                message: "You don't have DEBIT Account",
+            });
+        }
+        if (account && account?.balance < amount) {
+            return reply.code(400).send({
+                message: "Insufficient Fund",
+            });
+        }
+
+        // record transaction with status PENDING
+        const transaction = await recordTransactionWithdraw(
+            request.body,
+            user_id
+        );
+        // start transaction
+        await processTransaction(
+            {
+                ...transaction,
+                account_id: account.account_id,
+            },
+            "WITHDRAW"
+        )
+            .then((transaction) => {
+                transaction.status = "SUCCESS";
+                console.log(
+                    "transaction processing completed for:",
+                    transaction
+                );
+                reply.code(200).send({
+                    message: "Transaction Success",
+                });
+            })
+            .catch((err) => {
+                console.error(err);
+
+                // update transaction status to FAILED
+                updateTransactionFailed(transaction.id);
+                return reply.code(500).send({
+                    message: "Transaction Failed",
+                    transaction_id: transaction.id,
+                });
+            });
+    } catch (err) {
+        console.error(err);
         return reply.code(500).send(err);
     }
 }

@@ -48,8 +48,8 @@ model Transaction {
   amount Int
   user_id Int
   user User @relation("User_Sender",fields: [user_id], references: [id])
-  recipient_id Int
-  recipient User @relation("User_Recipient",fields: [recipient_id], references: [id])
+  recipient_id Int?
+  recipient User? @relation("User_Recipient",fields: [recipient_id], references: [id])
   status String
   comment String
   currency String

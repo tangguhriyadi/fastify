@@ -20,6 +20,18 @@ const transactionSendSchema = z.object({
         })
         .optional(),
 });
+const transactionWithdrawSchema = z.object({
+    amount: z.number({
+        required_error: "amount is required",
+        invalid_type_error: "amount must be a number",
+    }),
+    comment: z
+        .string({
+            invalid_type_error: "comment must be a string",
+        })
+        .optional(),
+});
+
 const transactionSendResponseSchema = z.object({
     ...successResponse,
     transaction_id: z.number({
@@ -29,11 +41,15 @@ const transactionSendResponseSchema = z.object({
 });
 
 export type TransactionSendInput = z.infer<typeof transactionSendSchema>;
+export type TransactionWithdrawInput = z.infer<
+    typeof transactionWithdrawSchema
+>;
 
 export const { schemas: transactionSchemas, $ref } = buildJsonSchemas(
     {
         transactionSendSchema,
         transactionSendResponseSchema,
+        transactionWithdrawSchema,
     },
     { $id: "transactionSchemaId" }
 );
