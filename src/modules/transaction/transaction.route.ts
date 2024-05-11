@@ -1,14 +1,33 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+import { FastifyInstance } from "fastify";
+import { $ref } from "./transaction.schema";
+import { transactionSendHandler } from "./transaction.controller";
 
 async function TransactionRoutes(server: FastifyInstance) {
     server.post(
         "/send",
         {
             preHandler: [server.authenticate],
+            schema: {
+                body: $ref("transactionSendSchema"),
+                response: {
+                    201: $ref("transactionSendResponseSchema"),
+                },
+            },
         },
-        (request: FastifyRequest, reply: FastifyReply) => {
-            return reply.code(200).send({ message: "success" });
-        }
+        transactionSendHandler
+    );
+    server.post(
+        "/withdraw",
+        {
+            preHandler: [server.authenticate],
+            schema: {
+                body: $ref("transactionSendSchema"),
+                response: {
+                    201: $ref("transactionSendResponseSchema"),
+                },
+            },
+        },
+        transactionSendHandler
     );
 }
 

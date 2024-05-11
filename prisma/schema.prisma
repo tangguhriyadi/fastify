@@ -35,10 +35,12 @@ model PaymentAccount {
 }
 
 model PaymentHistory {
-  transaction_id Int @unique
+  id Int @id @default(autoincrement())
+  transaction_id Int 
   transaction Transaction @relation(fields: [transaction_id], references: [id])
   account_id Int 
   payment_account PaymentAccount @relation(fields: [account_id], references: [account_id])
+  payment_type String
 }
 
 model Transaction {
@@ -52,5 +54,5 @@ model Transaction {
   comment String
   currency String
   created_at DateTime @default(now())
-  payment_history PaymentHistory?
+  payment_history PaymentHistory[]
 }

@@ -8,7 +8,7 @@ import { $ref } from "./user.schema";
 
 async function UserRoutes(server: FastifyInstance) {
     server.post(
-        "/",
+        "/register",
         {
             schema: {
                 body: $ref("createUserSchema"),

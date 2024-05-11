@@ -94,7 +94,7 @@ export async function createPaymentAccountHandler(
         const isAlreadyExist = await findAccountByType(user_id, type);
 
         if (isAlreadyExist) {
-            return reply.code(401).send({
+            return reply.code(400).send({
                 message: "Account has already exist",
             });
         }
