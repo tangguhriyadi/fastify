@@ -66,3 +66,40 @@ export async function findAccountByType(user_id: number, type: string) {
         },
     });
 }
+
+export async function findUserAccountHistory(user_id: number) {
+    const response = await prisma.paymentAccount.findMany({
+        where: {
+            user_id: user_id,
+        },
+        select: {
+            account_id: true,
+            account_type: true,
+            balance: true,
+            payment_history: {
+                select: {
+                    payment_type: true,
+                    transaction_id: true,
+                    transaction: {
+                        select: {
+                            amount: true,
+                            comment: true,
+                        },
+                    },
+                },
+            },
+        },
+    });
+
+    const flattenedResponse = response.map((account) => ({
+        ...account,
+        payment_history: account.payment_history.map((payment) => ({
+            transaction_id: payment.transaction_id,
+            payment_type: payment.payment_type,
+            amount: payment.transaction.amount,
+            comment: payment.transaction.comment,
+        })),
+    }));
+
+    return flattenedResponse;
+}

@@ -3,6 +3,7 @@ import {
     createPaymentAccount,
     createUser,
     findAccountByType,
+    findUserAccountHistory,
     findUserByUsername,
 } from "./user.service";
 import { AccountInput, CreateUserInput, LoginInput } from "./user.schema";
@@ -107,5 +108,22 @@ export async function createPaymentAccountHandler(
         };
     } catch (err) {
         return reply.code(500).send(err);
+    }
+}
+
+export async function paymentAccountsHandler(
+    request: FastifyRequest,
+    reply: FastifyReply
+) {
+    const { id: user_id } = request.user;
+    try {
+        const paymentAccounts = await findUserAccountHistory(user_id);
+        return reply.code(200).send({
+            message: "Success !",
+            data: paymentAccounts,
+        });
+    } catch (err) {
+        console.error(err);
+        reply.code(500).send(err);
     }
 }

@@ -49,6 +49,7 @@ const createPaymentAccountSchema = z.object({
         description: "type must be string DEBIT or CREDIT",
     }),
 });
+
 const createPaymentAccountResponseSchema = z.object({
     ...successResponse,
     type: z.enum(["DEBIT", "CREDIT"], {
@@ -56,6 +57,25 @@ const createPaymentAccountResponseSchema = z.object({
         message: "should DEBIT or CREDIT",
         invalid_type_error: "type must be string DEBIT or CREDIT",
     }),
+});
+
+const userAccountResponseSchema = z.object({
+    ...successResponse,
+    data: z.array(
+        z.object({
+            account_id: z.number(),
+            account_type: z.string(),
+            balance: z.number(),
+            transaction: z.array(
+                z.object({
+                    transaction_id: z.number(),
+                    payment_type: z.string(),
+                    amount: z.number(),
+                    comment: z.number(),
+                })
+            ),
+        })
+    ),
 });
 
 export type CreateUserInput = z.infer<typeof createUserSchema>;
@@ -70,6 +90,7 @@ export const { schemas: userSchemas, $ref } = buildJsonSchemas(
         loginResponseSchema,
         createPaymentAccountSchema,
         createPaymentAccountResponseSchema,
+        userAccountResponseSchema,
     },
     { $id: "userSchemaId" }
 );
