@@ -7,11 +7,7 @@ import jwt from "@fastify/jwt";
 
 export const server = Fastify();
 
-declare module "fastify" {
-    export interface FastifyInstance {
-        authenticate: any;
-    }
-}
+
 
 server.register(jwt, {
     secret: process.env.JWT_SECRET as string,

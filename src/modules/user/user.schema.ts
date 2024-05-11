@@ -8,6 +8,10 @@ const userCore = {
     }),
 };
 
+const successResponse = {
+    message: z.string(),
+};
+
 const createUserSchema = z.object({
     ...userCore,
     password: z.string({
@@ -17,6 +21,7 @@ const createUserSchema = z.object({
 });
 
 const createUserResponseSchema = z.object({
+    ...successResponse,
     ...userCore,
 });
 
@@ -36,12 +41,31 @@ const loginResponseSchema = z.object({
     access_token: z.string(),
 });
 
+const createPaymentAccountSchema = z.object({
+    type: z.enum(["DEBIT", "CREDIT"], {
+        required_error: "type is required",
+        message: "should DEBIT or CREDIT",
+        invalid_type_error: "type must be string DEBIT or CREDIT",
+    }),
+});
+const createPaymentAccountResponseSchema = z.object({
+    ...successResponse,
+    type: z.enum(["DEBIT", "CREDIT"], {
+        required_error: "type is required",
+        message: "should DEBIT or CREDIT",
+        invalid_type_error: "type must be string DEBIT or CREDIT",
+    }),
+});
+
 export type CreateUserInput = z.infer<typeof createUserSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
+export type AccountInput = z.infer<typeof createPaymentAccountSchema>;
 
 export const { schemas: userSchemas, $ref } = buildJsonSchemas({
     createUserSchema,
     createUserResponseSchema,
     loginSchema,
     loginResponseSchema,
+    createPaymentAccountSchema,
+    createPaymentAccountResponseSchema,
 });

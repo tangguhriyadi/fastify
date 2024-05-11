@@ -1,6 +1,11 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { createUser, findUserByUsername } from "./user.service";
-import { CreateUserInput, LoginInput } from "./user.schema";
+import {
+    createPaymentAccount,
+    createUser,
+    findAccountByType,
+    findUserByUsername,
+} from "./user.service";
+import { AccountInput, CreateUserInput, LoginInput } from "./user.schema";
 import bcrypt from "bcrypt";
 import { server } from "../../app";
 
@@ -14,16 +19,17 @@ export async function registerUserHandler(
         const isAlreadyExist = await findUserByUsername(request.body.username);
 
         if (isAlreadyExist) {
-            return reply
-                .code(400)
-                .send({
-                    message: `Username ${request.body.username} is already exist`,
-                });
+            return reply.code(400).send({
+                message: `Username ${request.body.username} is already exist`,
+            });
         }
 
         const user = await createUser(request.body);
 
-        return reply.code(201).send(user);
+        return reply.code(201).send({
+            message: "Success !",
+            ...user,
+        });
     } catch (err) {
         console.error(err);
         return reply.code(500).send(err);
@@ -69,6 +75,36 @@ export async function loginHandler(
         return reply.code(401).send({
             message: "Invali Email or Password",
         });
+    } catch (err) {
+        return reply.code(500).send(err);
+    }
+}
+
+export async function createPaymentAccountHandler(
+    request: FastifyRequest<{
+        Body: AccountInput;
+    }>,
+    reply: FastifyReply
+) {
+    const { type } = request.body;
+
+    const { id: user_id } = request.user;
+
+    try {
+        const isAlreadyExist = await findAccountByType(user_id, type);
+
+        if (isAlreadyExist) {
+            return reply.code(401).send({
+                message: "Account has already exist",
+            });
+        }
+
+        const account = await createPaymentAccount(request.body, user_id);
+
+        return {
+            message: "Success !",
+            ...account,
+        };
     } catch (err) {
         return reply.code(500).send(err);
     }

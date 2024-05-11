@@ -1,5 +1,5 @@
 import prisma from "../../utils/prisma";
-import { CreateUserInput } from "./user.schema";
+import { AccountInput, CreateUserInput } from "./user.schema";
 import bcrypt from "bcrypt";
 
 const SALT_ROUND = 12;
@@ -30,6 +30,31 @@ export async function findUserByUsername(username: string) {
     return prisma.user.findUnique({
         where: {
             username: username,
+        },
+    });
+}
+
+export async function createPaymentAccount(
+    input: AccountInput,
+    user_id: number
+) {
+    const account = await prisma.paymentAccount.create({
+        data: {
+            account_type: input.type,
+            user_id: user_id,
+            currency: "USD",
+            balance: 0,
+        },
+    });
+
+    return account;
+}
+
+export async function findAccountByType(user_id: number, type: string) {
+    return await prisma.paymentAccount.findFirst({
+        where: {
+            account_type: type,
+            user_id: user_id,
         },
     });
 }
