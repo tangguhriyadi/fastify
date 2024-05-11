@@ -29,7 +29,8 @@ export async function registerUserHandler(
 
         return reply.code(201).send({
             message: "Success !",
-            ...user,
+            user_id: user.id,
+            username: user.username,
         });
     } catch (err) {
         console.error(err);
@@ -70,6 +71,7 @@ export async function loginHandler(
             return {
                 message: "Success !",
                 access_token: server.jwt.sign(JWTPayload, { expiresIn }),
+                user_id: user.id,
             };
         }
 

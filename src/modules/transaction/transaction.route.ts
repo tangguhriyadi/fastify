@@ -16,6 +16,12 @@ async function TransactionRoutes(server: FastifyInstance) {
                     201: $ref("transactionSendResponseSchema"),
                 },
                 tags: ["transaction"],
+                security: [
+                    {
+                        bearerAuth: [],
+                    },
+                ],
+                summary: "API To Transfer Balance To Your Friend"
             },
         },
         transactionSendHandler
@@ -30,6 +36,12 @@ async function TransactionRoutes(server: FastifyInstance) {
                     201: $ref("transactionSendResponseSchema"),
                 },
                 tags: ["transaction"],
+                security: [
+                    {
+                        bearerAuth: [],
+                    },
+                ],
+                summary: "Withdraw Your balance"
             },
         },
         transactionWithdrawHandler

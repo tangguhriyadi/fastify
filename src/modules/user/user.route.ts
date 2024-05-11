@@ -17,6 +17,8 @@ async function UserRoutes(server: FastifyInstance) {
                     201: $ref("createUserResponseSchema"),
                 },
                 tags: ["user"],
+                summary: "Register Your Account Here!",
+                description: "Register you account and get free 100k balance on your DEBIT account"
             },
         },
         registerUserHandler
@@ -31,6 +33,7 @@ async function UserRoutes(server: FastifyInstance) {
                     200: $ref("loginResponseSchema"),
                 },
                 tags: ["user"],
+                summary: "Login To Your Account !"
             },
         },
         loginHandler
@@ -46,6 +49,7 @@ async function UserRoutes(server: FastifyInstance) {
                     201: $ref("createPaymentAccountResponseSchema"),
                 },
                 tags: ["user"],
+                summary: "API To Create Payment Account"
             },
         },
         createPaymentAccountHandler
@@ -57,9 +61,16 @@ async function UserRoutes(server: FastifyInstance) {
             onRequest: [server.authenticate],
             schema: {
                 response: {
-                    201: $ref("userAccountResponseSchema"),
+                    200: $ref("userAccountResponseSchema"),
                 },
                 tags: ["user"],
+                security: [
+                    {
+                        bearerAuth: [],
+                    },
+                ],
+                description: "API to get all payment account data of user",
+                summary: "API to get all payment account data of user"
             },
         },
         paymentAccountsHandler

@@ -34,10 +34,38 @@ async function main() {
         server.addSchema(schema);
     }
 
-    server.register(swagger);
+    server.register(swagger, {
+        openapi: {
+            components: {
+                securitySchemes: {
+                    bearerAuth: {
+                        type: "http",
+                        scheme: "bearer",
+                    },
+                },
+            },
+        },
+    });
 
     server.register(swaggerUi, {
         routePrefix: "/docs",
+        uiConfig: {
+            deepLinking: false,
+        },
+        uiHooks: {
+            onRequest: function (request, reply, next) {
+                next();
+            },
+            preHandler: function (request, reply, next) {
+                next();
+            },
+        },
+        staticCSP: true,
+        transformStaticCSP: (header) => header,
+        transformSpecification: (swaggerObject, request, reply) => {
+            return swaggerObject;
+        },
+        transformSpecificationClone: true,
     });
 
     server.register(UserRoutes, { prefix: "api/users" });

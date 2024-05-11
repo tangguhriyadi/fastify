@@ -23,6 +23,7 @@ const createUserSchema = z.object({
 const createUserResponseSchema = z.object({
     ...successResponse,
     ...userCore,
+    user_id: z.number(),
 });
 
 const loginSchema = z.object({
@@ -38,6 +39,7 @@ const loginSchema = z.object({
 
 const loginResponseSchema = z.object({
     ...successResponse,
+    user_id: z.string(),
     access_token: z.string(),
 });
 
@@ -66,13 +68,15 @@ const userAccountResponseSchema = z.object({
             account_id: z.number(),
             account_type: z.string(),
             balance: z.number(),
-            transaction: z.array(
-                z.object({
-                    transaction_id: z.number(),
-                    payment_type: z.string(),
-                    amount: z.number(),
-                    comment: z.number(),
-                })
+            payment_history: z.array(
+                z
+                    .object({
+                        transaction_id: z.number(),
+                        payment_type: z.string(),
+                        amount: z.number(),
+                        comment: z.string(),
+                    })
+                    .optional()
             ),
         })
     ),
