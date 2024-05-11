@@ -15,6 +15,7 @@ async function TransactionRoutes(server: FastifyInstance) {
                 response: {
                     201: $ref("transactionSendResponseSchema"),
                 },
+                tags: ["transaction"],
             },
         },
         transactionSendHandler
@@ -28,6 +29,7 @@ async function TransactionRoutes(server: FastifyInstance) {
                 response: {
                     201: $ref("transactionSendResponseSchema"),
                 },
+                tags: ["transaction"],
             },
         },
         transactionWithdrawHandler

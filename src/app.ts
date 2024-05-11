@@ -5,6 +5,8 @@ import TransactionRoutes from "./modules/transaction/transaction.route";
 import { userSchemas } from "./modules/user/user.schema";
 import jwt from "@fastify/jwt";
 import { transactionSchemas } from "./modules/transaction/transaction.schema";
+import swagger from "@fastify/swagger";
+import swaggerUi from "@fastify/swagger-ui";
 
 export const server = Fastify();
 
@@ -31,6 +33,12 @@ async function main() {
     for (const schema of [...userSchemas, ...transactionSchemas]) {
         server.addSchema(schema);
     }
+
+    server.register(swagger);
+
+    server.register(swaggerUi, {
+        routePrefix: "/docs",
+    });
 
     server.register(UserRoutes, { prefix: "api/users" });
 

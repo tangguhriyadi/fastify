@@ -16,6 +16,7 @@ async function UserRoutes(server: FastifyInstance) {
                 response: {
                     201: $ref("createUserResponseSchema"),
                 },
+                tags: ["user"],
             },
         },
         registerUserHandler
@@ -29,6 +30,7 @@ async function UserRoutes(server: FastifyInstance) {
                 response: {
                     200: $ref("loginResponseSchema"),
                 },
+                tags: ["user"],
             },
         },
         loginHandler
@@ -43,6 +45,7 @@ async function UserRoutes(server: FastifyInstance) {
                 response: {
                     201: $ref("createPaymentAccountResponseSchema"),
                 },
+                tags: ["user"],
             },
         },
         createPaymentAccountHandler
@@ -56,6 +59,7 @@ async function UserRoutes(server: FastifyInstance) {
                 response: {
                     201: $ref("userAccountResponseSchema"),
                 },
+                tags: ["user"],
             },
         },
         paymentAccountsHandler
