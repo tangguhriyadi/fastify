@@ -11,6 +11,16 @@ export async function registerUserHandler(
     reply: FastifyReply
 ) {
     try {
+        const isAlreadyExist = await findUserByUsername(request.body.username);
+
+        if (isAlreadyExist) {
+            return reply
+                .code(400)
+                .send({
+                    message: `Username ${request.body.username} is already exist`,
+                });
+        }
+
         const user = await createUser(request.body);
 
         return reply.code(201).send(user);
@@ -45,7 +55,6 @@ export async function loginHandler(
             const JWTPayload = {
                 id: user.id,
                 username: user.username,
-                balance: user.balance,
                 created_at: user.created_at,
             };
 

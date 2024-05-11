@@ -13,6 +13,13 @@ export async function createUser(input: CreateUserInput) {
         data: {
             username,
             password: hasedPassword,
+            accounts: {
+                create: {
+                    balance: 100000, // free $100K balance for new member
+                    currency: "USD",
+                    account_type: "DEBIT",
+                },
+            },
         },
     });
 

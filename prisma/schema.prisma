@@ -17,18 +17,40 @@ model User {
   id Int @id @default(autoincrement())
   username String @unique
   password String
-  balance Int @default(0)
   created_at DateTime @default(now())
+  accounts PaymentAccount[]
+  transaction_out Transaction[] @relation("User_Sender")
+  transaction_in Transaction[] @relation("User_Recipient")
+}
+
+model PaymentAccount {
+  account_id Int @id @default(autoincrement())
+  account_type String
+  balance Int
+  user_id Int
+  currency String
+  user User @relation(fields: [user_id], references: [id])
+  payment_history PaymentHistory[]
+  created_at DateTime @default(now())
+}
+
+model PaymentHistory {
+  transaction_id Int @unique
+  transaction Transaction @relation(fields: [transaction_id], references: [id])
+  account_id Int 
+  payment_account PaymentAccount @relation(fields: [account_id], references: [account_id])
 }
 
 model Transaction {
   id Int @id @default(autoincrement())
-  type String
   amount Int
   user_id Int
+  user User @relation("User_Sender",fields: [user_id], references: [id])
   recipient_id Int
+  recipient User @relation("User_Recipient",fields: [recipient_id], references: [id])
   status String
   comment String
   currency String
   created_at DateTime @default(now())
+  payment_history PaymentHistory?
 }

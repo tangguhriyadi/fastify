@@ -1,10 +1,17 @@
 import "dotenv/config";
 import Fastify, { FastifyReply, FastifyRequest } from "fastify";
 import UserRoutes from "./modules/user/user.route";
+import TransactionRoutes from "./modules/transaction/transaction.route";
 import { userSchemas } from "./modules/user/user.schema";
 import jwt from "@fastify/jwt";
 
 export const server = Fastify();
+
+declare module "fastify" {
+    export interface FastifyInstance {
+        authenticate: any;
+    }
+}
 
 server.register(jwt, {
     secret: process.env.JWT_SECRET as string,
@@ -31,6 +38,8 @@ async function main() {
     }
 
     server.register(UserRoutes, { prefix: "api/users" });
+
+    server.register(TransactionRoutes, { prefix: "api/transaction" });
 
     try {
         await server.listen(3000, "0.0.0.0");
