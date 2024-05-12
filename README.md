@@ -33,3 +33,17 @@ docker compose up -d
 ```
 
 Get Into the API docs [http://localhost:4000/docs](http://localhost:4000/docs) with your browser to see the Swagger docs. And try the features !
+
+## Local Development
+
+Install Dependencies:
+```bash
+npm install
+```
+
+Run dev server:
+```bash
+npm run dev
+```
+
+The backend server will run in http://localhost:4000. If you have already build and run the docker container, I recommend you to change the port to avoid conflict.
