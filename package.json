@@ -2,10 +2,11 @@
     "name": "fastify",
     "version": "1.0.0",
     "description": "",
-    "main": "index.js",
+    "main": "dist/app.js",
     "scripts": {
         "dev": "tsnd --respawn --transpile-only --exit-child src/app.ts",
-        "migrate": "npx prisma migrate dev --name init"
+        "migrate": "npx prisma migrate dev --name init",
+        "start": "tsc && node dist/app.js"
     },
     "author": "",
     "license": "ISC",
