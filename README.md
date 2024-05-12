@@ -8,7 +8,7 @@
 * TypeScript - Types & other cool stuff
 
 ## DB Diagram
-![Diagram](https://github.com/tangguhriyadi/fastify/image/diagram.png)
+![Diagram](https://github.com/tangguhriyadi/fastify/blob/master/image/diagram.png?raw=true)
 
 ## Features
 * Create a user at enpoint POST /api/users/register
