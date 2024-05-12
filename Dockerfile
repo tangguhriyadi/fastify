@@ -1,6 +1,8 @@
 # Use an official Node.js runtime as a base image
 FROM node:20
 
+RUN apt-get update
+
 # Set the working directory in the container
 WORKDIR /usr/src/app
 
@@ -9,6 +11,12 @@ COPY package*.json ./
 
 # Install application dependencies
 RUN npm install
+
+# uninstall the current bcrypt modules
+RUN npm uninstall bcrypt
+
+# install the bcrypt modules for the machine
+RUN npm install bcrypt
 
 # Copy the rest of the application code to the working directory
 COPY . .

@@ -14,7 +14,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
   app:
     build: .
-    command: sh -c "npx prisma migrate dev --name init && npm run dev"
+    command: sh -c "npx prisma migrate dev --name init && npm uninstall bcrypt && npm install bcrypt && npm run dev"
     ports:
       - '4000:4000'
     depends_on:

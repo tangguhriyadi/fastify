@@ -66,6 +66,7 @@ async function main() {
             return swaggerObject;
         },
         transformSpecificationClone: true,
+        
     });
 
     server.register(UserRoutes, { prefix: "api/users" });
@@ -73,8 +74,8 @@ async function main() {
     server.register(TransactionRoutes, { prefix: "api/transaction" });
 
     try {
-        await server.listen(3000, "0.0.0.0");
-        console.info("server running at port 3000");
+        await server.listen(4000, "0.0.0.0");
+        console.info("server running at port 4000");
     } catch (err) {
         console.error(err);
         process.exit(1);
